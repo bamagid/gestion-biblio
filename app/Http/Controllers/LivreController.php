@@ -49,12 +49,15 @@ class LivreController extends Controller
     {
         $livre->fill($request->validated());
         if ($request->hasFile('image')) {
-            if (File::exists($livre->image)) {
-                File::delete($livre->image);
+
+            if (File::exists(public_path("storage/" . $livre->image))) {
+                // dd("ok");
+                File::delete(public_path($livre->image));
             }
             $image = $request->file('image');
             $livre->image = $image->store('livres', 'public');
         }
+        // dd($livre->image);
         if ($livre->quantite > 0) {
             $livre->update(['disponible' => true]);
         }
@@ -67,6 +70,7 @@ class LivreController extends Controller
      */
     public function destroy(Livre $livre)
     {
-        //
+        $livre->delete();
+        return $this->customJsonResponse("Livre supprimé avec succès", null, 200);
     }
 }
