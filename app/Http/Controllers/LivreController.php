@@ -1,0 +1,67 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Livre;
+use App\Http\Requests\StoreLivreRequest;
+use App\Http\Requests\UpdateLivreRequest;
+
+class LivreController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        $livres = Livre::all();
+        return $this->customJsonResponse("Liste des livres", $livres);
+    }
+
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(StoreLivreRequest $request)
+    {
+        $livre = new Livre();
+        $livre->fill($request->validated());
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $livre->image = $image->store('livres', 'public');
+        }
+        $livre->save();
+        return $this->customJsonResponse("Livre créé avec succès", $livre, 201);
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Livre $livre)
+    {
+        return $this->customJsonResponse("Livre récupéré avec succès", $livre);
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Livre $livre)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(UpdateLivreRequest $request, Livre $livre)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Livre $livre)
+    {
+        //
+    }
+}
