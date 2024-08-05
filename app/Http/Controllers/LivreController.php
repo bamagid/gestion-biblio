@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Livre;
 use App\Http\Requests\StoreLivreRequest;
 use App\Http\Requests\UpdateLivreRequest;
+use Illuminate\Support\Facades\File;
 
 class LivreController extends Controller
 {
@@ -42,19 +43,23 @@ class LivreController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Livre $livre)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      */
     public function update(UpdateLivreRequest $request, Livre $livre)
     {
-        //
+        $livre->fill($request->validated());
+        if ($request->hasFile('image')) {
+            if (File::exists($livre->image)) {
+                File::delete($livre->image);
+            }
+            $image = $request->file('image');
+            $livre->image = $image->store('livres', 'public');
+        }
+        if ($livre->quantite > 0) {
+            $livre->update(['disponible' => true]);
+        }
+        $livre->update();
+        return $this->customJsonResponse("Livre modifié avec succès", $livre);
     }
 
     /**
