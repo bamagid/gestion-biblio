@@ -51,7 +51,6 @@ class LivreController extends Controller
         if ($request->hasFile('image')) {
 
             if (File::exists(public_path("storage/" . $livre->image))) {
-                // dd("ok");
                 File::delete(public_path($livre->image));
             }
             $image = $request->file('image');
@@ -72,5 +71,22 @@ class LivreController extends Controller
     {
         $livre->delete();
         return $this->customJsonResponse("Livre supprimé avec succès", null, 200);
+    }
+    public function restore($id)
+    {
+        $livre = Livre::onlyTrashed()->where('id', $id)->first();
+        $livre->restore();
+        return $this->customJsonResponse("Livre restauré avec succès", $livre);
+    }
+    public function forceDelete($id)
+    {
+        $livre = Livre::onlyTrashed()->where('id', $id)->first();
+        $livre->forceDelete();
+        return $this->customJsonResponse("Livre supprimé définitivement", null, 200);
+    }
+    public function trashed()
+    {
+        $livres = Livre::onlyTrashed()->get();
+        return $this->customJsonResponse("Livres archivés", $livres);
     }
 }

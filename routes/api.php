@@ -13,5 +13,8 @@ Route::middleware("auth")->group(
         Route::apiResource('livres', LivreController::class)->only('store', 'destroy');
         Route::post('livres/{livre}', [LivreController::class, 'update']);
         Route::get("refresh", [AuthController::class, "refresh"]);
+        Route::delete('livres/{id}', [LivreController::class, "forceDelete"]);
+        Route::get("livres/trashed", [LivreController::class, "trashed"]);
+        Route::post('livres/{id}/restore', [LivreController::class, "restore"]);
     }
 );

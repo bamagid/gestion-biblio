@@ -53,7 +53,6 @@ class EmpruntController extends Controller
      */
     public function update(UpdateEmpruntRequest $request, Emprunt $emprunt)
     {
-        //
     }
 
     /**
